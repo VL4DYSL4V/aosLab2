@@ -1,0 +1,7 @@
+load,A_1,A_4
+load,A_2,4
+left_shift,A_2
+left_shift,A_3
+left_shift,A_3
+right_shift,A_1
+right_shift,A_1
