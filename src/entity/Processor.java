@@ -44,13 +44,13 @@ public class Processor {
             commandRegister.setCurrentCommand(commands.peek()); // first tact
             commandCounterRegister.incrementAmount();
             tactCounterRegister.incrementTactAmount();
-            System.out.println(this.toString());
+            System.out.println("Registering " + this.toString());
 
             new Scanner(System.in).next();
             commands.peek().execute();                          //second tact
             tactCounterRegister.incrementTactAmount();
             stateRegister.setState(commands.peek().getResultHolder().getSignBit());
-            System.out.println(this.toString());
+            System.out.println("Executing " + this.toString());
 
             commands.remove();
         }

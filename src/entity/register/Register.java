@@ -11,7 +11,7 @@ public class Register {
     public Register(int bitAmount, String name) {
         this.bitAmount = bitAmount;
         this.name = name;
-        String binaries = Integer.toBinaryString(new Random().nextInt((int)(Math.pow(2, bitAmount) - 1)));
+        String binaries = Integer.toBinaryString(new Random().nextInt((int)(Math.pow(2, bitAmount - 1) - 1)));
         setBinaryValue(binaries);
     }
 

@@ -16,11 +16,7 @@ public class RightShiftCommand implements ProcessorCommand {
     public void execute() {
         String binaryValue = register.getBinaryValue();
         StringBuilder sb = new StringBuilder(binaryValue);
-        if(Objects.equals(register.getSignBit(), "0")) {
-            sb.insert(0, "0");
-        }else if(Objects.equals(register.getSignBit(), "1")){
-            sb.insert(0, "1");
-        }
+        sb.insert(1, "0");
         sb.deleteCharAt(sb.length() - 1);
         register.setBinaryValue(sb.toString());
     }
