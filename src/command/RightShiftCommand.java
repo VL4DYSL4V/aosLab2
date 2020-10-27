@@ -1,7 +1,6 @@
 package command;
 
 import entity.register.Register;
-
 import java.util.Objects;
 
 public class RightShiftCommand implements ProcessorCommand {
@@ -16,7 +15,7 @@ public class RightShiftCommand implements ProcessorCommand {
     public void execute() {
         String binaryValue = register.getBinaryValue();
         StringBuilder sb = new StringBuilder(binaryValue);
-        sb.insert(1, "0");
+        sb.insert(0, (Objects.equals(register.getSignBit(), "0"))? "0" : "1");
         sb.deleteCharAt(sb.length() - 1);
         register.setBinaryValue(sb.toString());
     }

@@ -2,8 +2,6 @@ package command;
 
 import entity.register.Register;
 
-import java.util.Objects;
-
 public class LeftShiftCommand implements ProcessorCommand {
     private Register register;
 
@@ -14,7 +12,7 @@ public class LeftShiftCommand implements ProcessorCommand {
     public void execute() {
         String binaryValue = register.getBinaryValue();
         StringBuilder sb = new StringBuilder(binaryValue);
-        sb.deleteCharAt(1);
+        sb.deleteCharAt(0);
         sb.append("0");
         register.setBinaryValue(sb.toString());
     }

@@ -11,8 +11,8 @@ public class Processor {
     private CommandCounterRegister commandCounterRegister;
     private TactCounterRegister tactCounterRegister;
     private StateRegister stateRegister;
-    private List<Register> registers = new ArrayList<>();
-    private Queue<ProcessorCommand> commands = new ArrayDeque<>();
+    private final List<Register> registers = new ArrayList<>();
+    private final Queue<ProcessorCommand> commands = new ArrayDeque<>();
 
     private final int bitsInRegister;
 
@@ -38,22 +38,23 @@ public class Processor {
         this.commands.addAll(commands);
     }
 
-    public void executeNext() {
-        if (!commands.isEmpty()) {
-            new Scanner(System.in).next();
-            commandRegister.setCurrentCommand(commands.peek()); // first tact
-            commandCounterRegister.incrementAmount();
+    public String executeNext() {
+        if (!allCommandsAreDone()) {
             tactCounterRegister.incrementTactAmount();
-            System.out.println("Registering " + this.toString());
-
-            new Scanner(System.in).next();
-            commands.peek().execute();                          //second tact
-            tactCounterRegister.incrementTactAmount();
-            stateRegister.setState(commands.peek().getResultHolder().getSignBit());
-            System.out.println("Executing " + this.toString());
-
-            commands.remove();
+            StringBuilder answerBuilder = new StringBuilder();
+            if(commandRegister.getCurrentCommand() == null) {
+                commandRegister.setCurrentCommand(commands.poll()); // first tact
+                commandCounterRegister.incrementAmount();
+                return answerBuilder.append("Registering ").append(toString()).toString();
+            }else {
+                commandRegister.getCurrentCommand().execute();                          //second tact
+                stateRegister.setState(commandRegister.getCurrentCommand().getResultHolder().getSignBit());
+                answerBuilder.append("Executed ").append(this.toString());
+                commandRegister.setCurrentCommand(null);
+                return answerBuilder.toString();
+            }
         }
+        return "";
     }
 
     public Collection<Register> getRegisters() {
@@ -61,7 +62,7 @@ public class Processor {
     }
 
     public boolean allCommandsAreDone() {
-        return commands.isEmpty();
+        return commands.isEmpty() && commandRegister.getCurrentCommand() == null;
     }
 
     @Override

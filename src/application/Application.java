@@ -4,7 +4,11 @@ import command.ProcessorCommand;
 import dao.CommandDao;
 import dao.FileCommandDAO;
 import entity.Processor;
+import requestHandler.NextTactRequestHandler;
+import requestHandler.ProcessorRequestHandler;
+import ui.LabUI;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,8 +22,10 @@ public class Application {
         Collection<ProcessorCommand> processorCommands =
                 commandDao.getCommands();
         processor.offerCommands(processorCommands);
-        while (!processor.allCommandsAreDone()){
-            processor.executeNext();
-        }
+        NextTactRequestHandler nextTactRequestHandler = new ProcessorRequestHandler(processor);
+        final LabUI labUI = new LabUI(nextTactRequestHandler);
+        SwingUtilities.invokeLater(() -> {
+            labUI.setVisible(true);
+        });
     }
 }
