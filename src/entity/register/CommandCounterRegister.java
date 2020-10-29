@@ -8,10 +8,11 @@ public class CommandCounterRegister {
         return registeredCommandAmount;
     }
 
-    public void incrementAmount(){
+    public void incrementAmount() {
         registeredCommandAmount++;
     }
 
+    
     @Override
     public String toString() {
         return "Command number:\t" + registeredCommandAmount;

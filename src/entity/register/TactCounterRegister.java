@@ -2,14 +2,14 @@ package entity.register;
 
 public class TactCounterRegister {
 
-    private long tactAmount = 0;
+    private int tactAmount = 0;
 
-    public long getTactAmount() {
+    public int getTactAmount() {
         return tactAmount;
     }
 
-    public void incrementTactAmount(){
-        tactAmount++;
+    public void setTactAmount(int tactAmount){
+        this.tactAmount = tactAmount;
     }
 
     @Override

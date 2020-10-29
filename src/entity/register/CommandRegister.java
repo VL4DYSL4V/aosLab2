@@ -18,6 +18,4 @@ public class CommandRegister {
     public String toString(){
         return "Curr command:\t" + currentCommand.toString();
     }
-
-
 }

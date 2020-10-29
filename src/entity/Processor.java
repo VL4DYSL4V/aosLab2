@@ -30,24 +30,26 @@ public class Processor {
         registers.add(new Register(bitsInRegister, "A_2"));
         registers.add(new Register(bitsInRegister, "A_3"));
         registers.add(new Register(bitsInRegister, "A_4"));
+        registers.add(new Register(bitsInRegister, "Acc"));
 
         this.stateRegister.setState(registers.get(registers.size() - 1).getSignBit());
     }
 
-    public void offerCommands(Collection<ProcessorCommand> commands) {
-        this.commands.addAll(commands);
+    public void offerCommand(ProcessorCommand command) {
+        this.commands.offer(command);
     }
 
     public String executeNext() {
         if (!allCommandsAreDone()) {
-            tactCounterRegister.incrementTactAmount();
             StringBuilder answerBuilder = new StringBuilder();
             if(commandRegister.getCurrentCommand() == null) {
+                tactCounterRegister.setTactAmount(1);
                 commandRegister.setCurrentCommand(commands.poll()); // first tact
                 commandCounterRegister.incrementAmount();
                 return answerBuilder.append("Registering ").append(toString()).toString();
             }else {
-                commandRegister.getCurrentCommand().execute();                          //second tact
+                commandRegister.getCurrentCommand().execute();    
+                tactCounterRegister.setTactAmount(2);               //second tact
                 stateRegister.setState(commandRegister.getCurrentCommand().getResultHolder().getSignBit());
                 answerBuilder.append("Executed ").append(this.toString());
                 commandRegister.setCurrentCommand(null);

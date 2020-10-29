@@ -5,21 +5,21 @@ import command.LoadValueCommand;
 import command.ProcessorCommand;
 import command.RightShiftCommand;
 import entity.register.Register;
+import java.io.EOFException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-
 
 public class FileCommandDAO implements CommandDao {
 
     private static final Path SOURCE_PATH = Paths.get("commands.txt");
     private final Collection<Register> registers;
-
+    private int line = 0;
     public FileCommandDAO(Collection<Register> registers) {
         this.registers = registers;
     }
@@ -27,28 +27,35 @@ public class FileCommandDAO implements CommandDao {
     private boolean sourceExists() {
         return Files.exists(SOURCE_PATH);
     }
-
+    
     @Override
-    public Collection<ProcessorCommand> getCommands() throws IOException {
-        Collection<ProcessorCommand> processorCommands = new ArrayList<>();
+    public ProcessorCommand getCommand() throws IOException {
+        ProcessorCommand command = null;
         if (sourceExists()) {
-            Collection<String> lines = Files.readAllLines(SOURCE_PATH);
-            lines.forEach((line) -> processorCommands.add(parse(line)));
+            List<String> lines = Files.readAllLines(SOURCE_PATH);
+            if(lines.size() == line){
+                throw new EOFException();
+            }
+            command = parse(lines.get(line));
+            line++;
         }
-        return processorCommands;
+        return command;
     }
 
     private ProcessorCommand parse(String s) {
         String[] parts = s.split(",");
         String command = parts[0];
-        Register register = getByName(parts[1]);
-        if (Objects.equals("load", command)) {
-            String whatToLoad = parts[2];
+        if (Objects.equals("load_to_Acc", command)) {
+            String whatToLoad = parts[1];
             if (whatToLoad.matches("-?\\d+")) {
-                return new LoadValueCommand(Integer.parseInt(whatToLoad), register);
+                return new LoadValueCommand(Integer.parseInt(whatToLoad), getByName("Acc"));
             } else if (whatToLoad.matches("A_[\\d]+")) {
-                return new LoadValueCommand(Integer.parseInt(getByName(whatToLoad).getBinaryValue(), 2), register);
+                return new LoadValueCommand(Integer.parseInt(getByName(whatToLoad).getBinaryValue(), 2), getByName("Acc"));
             }
+        }
+        Register register = getByName(parts[1]);
+        if (Objects.equals("flush_Acc", command)) {
+            return new LoadValueCommand(getByName("Acc").getValue(), register);
         } else if (Objects.equals("left_shift", command)) {
             return new LeftShiftCommand(register);
         } else if (Objects.equals("right_shift", command)) {
